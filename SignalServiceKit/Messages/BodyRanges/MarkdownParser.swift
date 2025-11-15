@@ -7,6 +7,9 @@ import Foundation
 
 /// Simple markdown parser that converts basic markdown syntax to MessageBodyRanges styles.
 /// Supports: **bold**, *italic*, `code`, ~~strikethrough~~
+///
+/// This parser is intentionally simple and focused on basic inline formatting only.
+/// It does not support block-level elements, nested formatting, or complex markdown features.
 public struct MarkdownParser {
     
     /// Parse markdown text and return a MessageBody with appropriate styles applied
