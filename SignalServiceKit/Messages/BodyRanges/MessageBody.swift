@@ -238,6 +238,30 @@ extension MessageBody {
             ranges: newRanges
         )
     }
+    
+    // MARK: - Markdown Support
+    
+    /// Parse markdown syntax in the message text and convert it to MessageBodyRanges styles.
+    /// This can be used to render incoming messages that contain markdown formatting.
+    ///
+    /// Supported markdown syntax:
+    /// - `**text**` for bold
+    /// - `*text*` for italic
+    /// - `` `text` `` for monospace/code
+    /// - `~~text~~` for strikethrough
+    ///
+    /// Note: Only applies markdown if the message doesn't already have explicit formatting.
+    /// This preserves messages with Signal's native rich text formatting.
+    ///
+    /// - Returns: A new MessageBody with markdown converted to styles, or self if already formatted
+    public func applyingMarkdownFormatting() -> MessageBody {
+        // Only apply markdown if there are no existing ranges
+        // This prevents double-formatting and respects explicitly formatted messages
+        guard !hasRanges else {
+            return self
+        }
+        return MarkdownParser.parse(text)
+    }
 }
 
 public extension TSThread {

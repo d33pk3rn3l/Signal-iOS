@@ -14,6 +14,33 @@ final class MessageBodyTests: XCTestCase {
     typealias SingleStyle = MessageBodyRanges.SingleStyle
     typealias CollapsedStyle = MessageBodyRanges.CollapsedStyle
 
+    // MARK: - Markdown Support
+
+    func testApplyingMarkdownFormatting_plainText() {
+        let messageBody = MessageBody(text: "Hello **world**!", ranges: .empty)
+        let result = messageBody.applyingMarkdownFormatting()
+        
+        XCTAssertEqual(result.text, "Hello world!")
+        XCTAssertEqual(result.ranges.collapsedStyles.count, 1)
+        XCTAssertTrue(result.ranges.collapsedStyles[0].value.style.contains(.bold))
+    }
+    
+    func testApplyingMarkdownFormatting_alreadyFormatted() {
+        // Message already has explicit formatting - markdown should NOT be applied
+        let messageBody = MessageBody(
+            text: "Hello world",
+            ranges: MessageBodyRanges(
+                mentions: [:],
+                styles: [NSRangedValue(.bold, range: NSRange(location: 6, length: 5))]
+            )
+        )
+        let result = messageBody.applyingMarkdownFormatting()
+        
+        // Should return unchanged since it already has ranges
+        XCTAssertEqual(result.text, "Hello world")
+        XCTAssertTrue(result === messageBody || result == messageBody)
+    }
+
     // MARK: - Hydration
 
     let acis = (0...5).map { _ in Aci.randomForTesting() }
