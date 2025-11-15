@@ -499,6 +499,7 @@ public extension TSMessage {
         switch previewText(tx) {
         case let .body(body, prefix, ranges):
             let hydrated = MessageBody(text: body, ranges: ranges ?? .empty)
+                .applyingMarkdownFormatting()  // Apply markdown formatting if no explicit formatting exists
                 .hydrating(mentionHydrator: ContactsMentionHydrator.mentionHydrator(transaction: tx))
                 .asPlaintext()
             guard let prefix else {
@@ -523,6 +524,7 @@ public extension TSMessage {
         switch previewText(tx) {
         case let .body(body, prefix, ranges):
             let hydrated = MessageBody(text: body, ranges: ranges ?? .empty)
+                .applyingMarkdownFormatting()  // Apply markdown formatting if no explicit formatting exists
                 .hydrating(mentionHydrator: ContactsMentionHydrator.mentionHydrator(transaction: tx))
             guard let prefix else {
                 return hydrated
